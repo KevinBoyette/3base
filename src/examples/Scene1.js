@@ -48,6 +48,7 @@ export default class Scene1 extends tb.Scene {
 
     new tb.GLTFModel(this, -10, 0, -10, 'assets/models/radio', 0.009, 100)
     .then(model=>{
+      model.initPhysics();
       // model.addPositionalAudio("./assets/audio/theme.ogg", 10);
       model.addToScene();
     })
@@ -66,7 +67,7 @@ export default class Scene1 extends tb.Scene {
   }
 
   click(){
-    let spd = 10;
+    let spd = 100;
     let pos = this.camera.controls.position;
     let direction = this.camera.getDirection(0,0,-1);
     let ball = new tb.Ball(this, pos.x,pos.y,pos.z, this.cannonBallTexture, 1, 100);

@@ -21,11 +21,11 @@ export default class MeshObject extends SceneObject {
     this.threeObject.receiveShadow = true;
   }
 
-  initPhysics(mass, shape){
+  initPhysics(shape){
     new Promise ((resolve, reject) => {
       try{
         this.body = new CANNON.Body({
-          mass: mass
+          mass: this.mass
         });
         this.body.addShape(shape);
         this.body.position.set(this.x,this.y,this.z);

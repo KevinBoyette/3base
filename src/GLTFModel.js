@@ -48,6 +48,17 @@ export default class GLTFModel extends MeshObject {
     });
   }
 
+  initPhysics(){
+    let geometry;
+    this.gltf.scene.traverse( node => {
+      if ( node instanceof THREE.Mesh ){
+        geometry = 
+      }
+    });
+
+    this.initPhysics();
+  }
+
   playAnimation(aNum = 0){
     if( this.gltf.animations.length > 0){
       this.mixer = new THREE.AnimationMixer(this.gltf.scene);

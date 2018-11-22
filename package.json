@@ -2,7 +2,7 @@
   "name": "3base",
   "version": "0.1.19",
   "main": "lib/3base.js",
-  "description": "3d Wb Application Engine (THREE.js and Ammo.js Wrapper)",
+  "description": "3d Wb Application Engine (THREE.js and CANNON.js Wrapper)",
   "scripts": {
     "test": "echo \"PASS\" && exit 0",
     "dev": "webpack-dev-server --mode development --content-base srv/",
@@ -38,7 +38,8 @@
   "dependencies": {
     "cannon": "^0.6.2",
     "three": "^0.93.0",
-    "three-gltf-loader": "^1.97.0"
+    "three-gltf-loader": "^1.97.0",
+    "three-to-cannon": "^2.0.0"
   },
   "postinstall": "install-app-deps"
 }

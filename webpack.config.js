@@ -1,4 +1,5 @@
 const path = require('path');
+// const webpack = require('webpack');
 console.log(path.join( __dirname + "/srv"));
 
 module.exports = {
@@ -35,7 +36,13 @@ module.exports = {
   //   },
   //   extensions: ['*', '.js', '.jsx']
   // },
-  
+
+  // plugins: [
+  //   new webpack.ProvidePlugin({
+  //     THREE: 'three'
+  //   })
+  // ],
+
   devServer: {
     port: 10001
   }
