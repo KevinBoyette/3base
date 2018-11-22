@@ -49,13 +49,19 @@ export default class GLTFModel extends MeshObject {
   }
 
   initPhysics(){
-    let geometry;
+    let bbox;
     this.gltf.scene.traverse( node => {
       if ( node instanceof THREE.Mesh ){
-        geometry = 
+        geometry = new THREE.Geometry().fromBufferGeometry( node.geometry );
+        geometry.computeBoundingBox();
+        bbox
       }
     });
-
+    let box = new CANNON.Box(new CANNON.Vec3(
+      (box.max.x - box.min.x) / 2,
+      (box.max.y - box.min.y) / 2,
+      (box.max.z - box.min.z) / 2
+    ));
     this.initPhysics();
   }
 
