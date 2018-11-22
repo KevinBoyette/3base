@@ -1,7 +1,6 @@
 'use-strict';
 
 import * as THREE from 'three';
-import * as AMMO from 'ammo.js';
 import MeshObject from './MeshObject';
 
 export default class GLTFModel extends MeshObject {
@@ -47,99 +46,6 @@ export default class GLTFModel extends MeshObject {
         }
       )
     });
-  }
-
-  initBoundingBoxPhysics(){
-
-    let helper = new THREE.BoxHelper(this.gltf.scene, 0xff0000);
-    let geometry = new THREE.Geometry().fromBufferGeometry( helper.geometry );
-    geometry.computeBoundingBox()
-    let w = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
-    let h = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
-    let d = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
-
-    let boxShape = new AMMO.btBoxShape(new AMMO.btVector3(w, h, d));
-    // this.initPhysics(this.mass, boxShape);
-
-    console.log(helper, geometry)
-    console.log(w, h, d);
-
-    this.scene.scene.add(helper);
-  }
-
-  initConcavePhysics(){
-    
-    let triangles = new Array(0);
-    this.gltf.scene.traverse( node => {
-      if ( node instanceof THREE.Mesh ){
-        let geometry = new THREE.Geometry().fromBufferGeometry( node.geometry );
-        geometry.mergeVertices();
-        triangles = this.trianglesFromGeomerty(geometry, triangles);
-      }
-    });
-
-    let
-      triangle_mesh = new AMMO.btTriangleMesh,
-      _vec3_1 = new AMMO.btVector3(),
-      _vec3_2 = new AMMO.btVector3(), 
-      _vec3_3 = new AMMO.btVector3();
-
-    for ( let i = 0; i < triangles.length; i++ ) {
-      let triangle = triangles[i];
-
-      _vec3_1.setX(triangle[0].x);
-      _vec3_1.setY(triangle[0].y);
-      _vec3_1.setZ(triangle[0].z);
-
-      _vec3_2.setX(triangle[1].x);
-      _vec3_2.setY(triangle[1].y);
-      _vec3_2.setZ(triangle[1].z);
-
-      _vec3_3.setX(triangle[2].x);
-      _vec3_3.setY(triangle[2].y);
-      _vec3_3.setZ(triangle[2].z);
-
-      triangle_mesh.addTriangle(
-        _vec3_1,
-        _vec3_2,
-        _vec3_3,
-        true
-      );
-    }
-
-    let shape = new AMMO.btBvhTriangleMeshShape(
-      triangle_mesh,
-      true,
-      true
-    );
-    
-    this.initPhysics(this.mass, shape);
-  }
-
-  trianglesFromGeomerty(geometry, triangles){
-    let vertices = geometry.vertices;
-    for ( let i = 0; i < geometry.faces.length; i++ ) {
-			let face = geometry.faces[i];
-			if ( face instanceof THREE.Face3) {
-				triangles.push([
-					{ x: vertices[face.a].x, y: vertices[face.a].y, z: vertices[face.a].z },
-					{ x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
-					{ x: vertices[face.c].x, y: vertices[face.c].y, z: vertices[face.c].z }
-				]);
-			} else if ( face instanceof THREE.Face4 ) {
-				triangles.push([
-					{ x: vertices[face.a].x, y: vertices[face.a].y, z: vertices[face.a].z },
-					{ x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
-					{ x: vertices[face.d].x, y: vertices[face.d].y, z: vertices[face.d].z }
-				]);
-				triangles.push([
-					{ x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
-					{ x: vertices[face.c].x, y: vertices[face.c].y, z: vertices[face.c].z },
-					{ x: vertices[face.d].x, y: vertices[face.d].y, z: vertices[face.d].z }
-				]);
-			}
-    }
-    return triangles;
   }
 
   playAnimation(aNum = 0){

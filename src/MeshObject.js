@@ -1,7 +1,7 @@
 'use-strict';
 
 import * as THREE from 'three';
-import * as AMMO from 'ammo.js';
+import * as CANNON from 'cannon';
 import SceneObject from './SceneObject';
 
 export default class MeshObject extends SceneObject {
@@ -22,15 +22,24 @@ export default class MeshObject extends SceneObject {
   }
 
   initPhysics(mass, shape){
-    this.transform = new AMMO.btTransform();
-    this.transform.setIdentity();
-    this.transform.setOrigin(new AMMO.btVector3(this.x, this.y,this.z));
-    var localInertia = new AMMO.btVector3(0, 0, 0);
-    shape.calculateLocalInertia(mass, localInertia);
-    var motionState = new AMMO.btDefaultMotionState(this.transform);
-    var rbInfo = new AMMO.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
-    this.body = new AMMO.btRigidBody(rbInfo);
-    this.scene.dynamicsWorld.addRigidBody(this.body);
+    new Promise ((resolve, reject) => {
+      try{
+        this.body = new CANNON.Body({
+          mass: mass
+        });
+        this.body.addShape(shape);
+        this.body.position.set(this.x,this.y,this.z);
+        this.body.angularVelocity.set(0,0,0);
+        this.body.angularDamping = 0.7;
+        this.body.allowSleep = true;
+        this.body.sleepSpeedLimit = 0.01; // Body will feel sleepy if speed < n (speed == norm of velocity)
+        this.body.sleepTimeLimit = 0.5; // Body falls asleep after n seconds of sleepiness
+        this.scene.world.addBody(this.body);
+        resolve();
+      }catch (e) {
+        reject(e);
+      }
+    });
   }
 
   setRotation(x=0.0, y=0.0, z=0.0, w=0.0){

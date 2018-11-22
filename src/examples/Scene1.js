@@ -23,7 +23,7 @@ export default class Scene1 extends tb.Scene {
     for (let w = 0; w < 5; w++) {
       for (let h = 0; h < 10; h++) {
         for (let d = 0; d < 5; d++) {
-          let box = new tb.Box(this,w,h,d, boxTextures[~~tb.Utils.randNum(0,boxTextures.length-1)], 1, 2.5);
+          let box = new tb.Cube(this,w,h,d, boxTextures[~~tb.Utils.randNum(0,boxTextures.length-1)], 1, 2.5);
           // box.body.setActivationState(0);
           box.addToScene();
         }
@@ -48,10 +48,6 @@ export default class Scene1 extends tb.Scene {
 
     new tb.GLTFModel(this, -10, 0, -10, 'assets/models/radio', 0.009, 100)
     .then(model=>{
-      // model.initPhysics(1, new tb.AMMO.btBoxShape(new tb.AMMO.btVector3(1,0.5,0.45)));
-      // model.initConcavePhysics();
-      model.initBoundingBoxPhysics();
-      // model.setRotation(0,1,0,-1);
       // model.addPositionalAudio("./assets/audio/theme.ogg", 10);
       model.addToScene();
     })
@@ -70,11 +66,13 @@ export default class Scene1 extends tb.Scene {
   }
 
   click(){
-    let spd = 50;
+    let spd = 10;
     let pos = this.camera.controls.position;
     let direction = this.camera.getDirection(0,0,-1);
-    let ball = new tb.Ball(this, pos.x,pos.y,pos.z, this.cannonBallTexture, 0.25, 100);
-    ball.body.setLinearVelocity(new tb.AMMO.btVector3(direction.x * spd, direction.y * spd, direction.z * spd));
+    let ball = new tb.Ball(this, pos.x,pos.y,pos.z, this.cannonBallTexture, 1, 100);
+    ball.body.velocity.set(direction.x * spd, direction.y * spd, direction.z * spd);
+    ball.body.addEventListener("sleep",(event)=>{ball.die();});
+    ball.body.angularVelocity.set(0, 0, 0);
     ball.addToScene();
   }
 }

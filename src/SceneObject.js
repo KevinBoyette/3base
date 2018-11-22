@@ -22,16 +22,8 @@ export default class SceneObject {
   
   update(tick=0.5){
     if(this.scene.physicsEnabled && this.body !== null){
-      this.body.getMotionState().getWorldTransform(this.transform);
-      var origin = this.transform.getOrigin();
-      this.threeObject.position.x = origin.x();
-      this.threeObject.position.y = origin.y();
-      this.threeObject.position.z = origin.z();
-      var rotation = this.transform.getRotation();
-      this.threeObject.quaternion.x = rotation.x();
-      this.threeObject.quaternion.y = rotation.y();
-      this.threeObject.quaternion.z = rotation.z();
-      this.threeObject.quaternion.w = rotation.w();
+      this.threeObject.position.copy(this.body.position);
+      this.threeObject.quaternion.copy(this.body.quaternion);
     }
 
     if( this.mixer !== null)

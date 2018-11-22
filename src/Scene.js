@@ -2,7 +2,7 @@
 
 import Camera from './Camera';
 import * as THREE from 'three';
-import * as AMMO from 'ammo.js';
+import * as CANNON from 'cannon';
 import HemisphereLight from './HemisphereLight';
 import DirectionalLight from './DirectionalLight';
 
@@ -34,10 +34,10 @@ export default class Scene {
       this.camera.update(deltaTime);
       
       if(this.physicsEnabled ){
-        this.dynamicsWorld.stepSimulation(deltaTime, 1);
-        // this.removeBodies.map((body)=>{
-        //   this.world.remove(body);
-        // });
+        this.world.step(this.fixedTime, deltaTime, 5);
+        this.removeBodies.map((body)=>{
+          this.world.remove(body);
+        });
       }
       
       this.sceneObjects.map((sceneObject)=>{
@@ -50,12 +50,11 @@ export default class Scene {
 
   enablePhysics(){
     this.physicsEnabled = true;
-    let collisionConfiguration = new AMMO.btDefaultCollisionConfiguration();
-    let dispatcher = new AMMO.btCollisionDispatcher(collisionConfiguration);
-    let overlappingPairCache = new AMMO.btDbvtBroadphase();
-    let solver = new AMMO.btSequentialImpulseConstraintSolver();
-    this.dynamicsWorld = new AMMO.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    this.dynamicsWorld.setGravity(new AMMO.btVector3(0, -10, 0));
+    this.world = new CANNON.World();
+    this.world.gravity.set(0,-9.82,0);
+    // this.world.broadphase = new CANNON.NaiveBroadphase();
+    this.world.solver.iterations = 10;
+    this.world.allowSleep = true;
     console.log("Scene Physics Enabled")
   }
 
