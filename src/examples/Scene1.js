@@ -46,7 +46,7 @@ export default class Scene1 extends tb.Scene {
     //   deadpool.addToScene();
     // })
 
-    new tb.GLTFModel(this, -10, 0, -10, 'assets/models/radio', 0.009, 100)
+    new tb.GLTFModel(this, -10, 0, -10, 'assets/models/duck', 1, 100)
     .then(model=>{
       model.initPhysics();
       // model.addPositionalAudio("./assets/audio/theme.ogg", 10);

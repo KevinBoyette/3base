@@ -22,7 +22,6 @@ export default class MeshObject extends SceneObject {
   }
 
   initPhysics(shape){
-    new Promise ((resolve, reject) => {
       try{
         this.body = new CANNON.Body({
           mass: this.mass
@@ -35,11 +34,8 @@ export default class MeshObject extends SceneObject {
         this.body.sleepSpeedLimit = 0.01; // Body will feel sleepy if speed < n (speed == norm of velocity)
         this.body.sleepTimeLimit = 0.5; // Body falls asleep after n seconds of sleepiness
         this.scene.world.addBody(this.body);
-        resolve();
       }catch (e) {
-        reject(e);
       }
-    });
   }
 
   setRotation(x=0.0, y=0.0, z=0.0, w=0.0){

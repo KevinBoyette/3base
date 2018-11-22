@@ -1,6 +1,8 @@
 'use-strict';
 
 import * as THREE from 'three';
+import * as CANNON from 'cannon';
+import { threeToCannon } from 'three-to-cannon';
 import MeshObject from './MeshObject';
 
 export default class GLTFModel extends MeshObject {
@@ -49,20 +51,18 @@ export default class GLTFModel extends MeshObject {
   }
 
   initPhysics(){
-    let bbox;
-    this.gltf.scene.traverse( node => {
-      if ( node instanceof THREE.Mesh ){
-        geometry = new THREE.Geometry().fromBufferGeometry( node.geometry );
-        geometry.computeBoundingBox();
-        bbox
-      }
-    });
+    let helper = new THREE.BoxHelper(this.gltf.scene, 0xff0000);
+    let geometry = new THREE.Geometry().fromBufferGeometry( helper.geometry );
+    geometry.computeBoundingBox()
+    let bbox = geometry.boundingBox;
     let box = new CANNON.Box(new CANNON.Vec3(
-      (box.max.x - box.min.x) / 2,
-      (box.max.y - box.min.y) / 2,
-      (box.max.z - box.min.z) / 2
+      (bbox.max.x - bbox.min.x) / 2,
+      (bbox.max.y - bbox.min.y) / 2,
+      (bbox.max.z - bbox.min.z) / 2
     ));
-    this.initPhysics();
+    console.log(box)
+    super.initPhysics(box);
+    this.scene.scene.add(helper)
   }
 
   playAnimation(aNum = 0){
